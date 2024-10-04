@@ -8,6 +8,7 @@
 - Mapeamento com dicionário para refinar o envio final (por exemplo: vacina antirrábica, na mensagem final envia 'vacina de raiva do xxx' ao cliente);
 - Função de envio de mensagens:
     - Simular: para testes; printa as mensagens e o destinatário no console ao invés de enviá-las;
+    - Todos os nomes contidos na mensagem são ajustados, capitalizados etc para melhor resultado final;
     - Obtém primeiro nome do cliente, capitalizado;
     - Algumas linhas de Telefones contém mais de um número, separado por vírgulas. O código prioriza o primeiro número de celular disponível(não fixo);
     - Caso não haja nenhum, ele printa um erro e segue ao próximo cliente;
