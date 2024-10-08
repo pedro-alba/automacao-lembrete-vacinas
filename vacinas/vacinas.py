@@ -4,12 +4,35 @@ import pywhatkit as pwk
 import keyboard
 import time
 import pyautogui
+import sys
 
 
-# Diretório
-# Obtém o diretório onde o script está localizado
-current_dir = os.path.dirname(os.path.abspath(__file__))
-# Caminho completo para o arquivo XLSX
+def exibir_mensagem_inicial():
+    print("="*50)
+    print("Bem-vindo ao Programa de Envio de Mensagens de Vacinação!")
+    print("Versão: 1.0.0")
+    print("-Este programa envia mensagens automáticas via WhatsApp informando os clientes sobre vacinas e produtos de seus pets que estão vencendo.")
+    print("Instruções:")
+    print("-- Baixe o relatório de vacinas programadas;")
+    print("-- Converta o arquivo .xls para .xlsx (vários sites podem fazer isso facilmente);")
+    print("-- O arquivo deve ser renomeado para 'vacinacao.xlsx';")
+    print("-- O Whatsapp Web da clínica deve estar conectado no computador. Não precisa estar aberto;")
+    print("-- Certifique-se de que o arquivo 'vacinacao.xlsx' está no mesmo diretório que este executável;")
+    print("-- Execute esse arquivo. Você será questionado sobre o modo simulação. Se 's', apenas escreverá as mensagens simuladas aqui, para verificação. Rode simulação; 'n' para enviar as mensagens.")
+    print("-- Não mexa nas abas enquanto o programa estiver rodando. Ele vai automaticamente enviar as mensagens e fechar as abas;")
+    print("="*50)
+    print("Iniciando o processo...\n")
+
+
+# Get the path to the directory where the script or executable is located
+if getattr(sys, 'frozen', False):
+    # If the script is running as a bundled executable
+    current_dir = os.path.dirname(sys.executable)
+else:
+    # If running in a normal Python environment
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Path to the XLSX file
 arquivo_xlsx = os.path.join(current_dir, 'vacinacao.xlsx')
 
 # Conversão xlsx para csv
@@ -27,7 +50,6 @@ nome_vacina_produto_mapeamento = {
     'COLEIRA ANTIPARASITÁRIA': 'coleira',
     'COLEIRA ANTIPARASITÁRIA SERESTO': 'coleira',
     'DRONTAL SO GATOS TRANSDERMAL': 'drontal'
-
 }
 
 # Função para converter nomes de vacinas/produtos
@@ -88,8 +110,10 @@ def enviar_mensagens(clientes, simular=False):
 
         # Enviar ou simular envio
         if simular:
+            print("Simulação -> ON.")
             print(f"[Simulação] Mensagem para: {numero_cliente}\n{mensagem}\n")
         else:
+            print("Simulação -> OFF.")
             pwk.sendwhatmsg_instantly(f"+{numero_cliente}", mensagem)
 
             # Aguardar um pouco para garantir que a janela do WhatsApp Web abra
@@ -106,5 +130,17 @@ def enviar_mensagens(clientes, simular=False):
 
             print(f"Mensagem enviada para: {nome_cliente_formatado} ({numero_cliente})")
 
-# Chamar a função de envio de mensagens
-enviar_mensagens(df, simular=True)
+if __name__ == '__main__':
+    while True:
+        exibir_mensagem_inicial()
+        user_input = input("Deseja rodar o programa em modo simulação? (s/n): ").strip().lower()
+        if user_input == 's':
+            simular = True
+            break
+        elif user_input == 'n':
+            simular = False
+            break
+        else:
+            print("Entrada inválida, por favor responda com 's' (sim) ou 'n' (não).")
+
+    enviar_mensagens(df, simular)
